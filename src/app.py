@@ -16,18 +16,39 @@ from yaml.loader import SafeLoader
 import os
 from dotenv import load_dotenv
 # Título da página
-st.set_page_config(layout="wide")
+st.session_state['layout'] = "wide"
+st.set_page_config(layout=st.session_state['layout'])
 load_dotenv()
 import time
 config = {
     "credentials": {
         "usernames": {
-            os.getenv("USERNAME"): {
-                "email": os.getenv("EMAIL"),
+            os.getenv("USERNAME_A"): {
+                "email": os.getenv("EMAIL_A"),
                 "logged_in": False,
-                "name": os.getenv("NAME"),
-                "password": os.getenv("PASSWORD"),  # Substitua pela senha criptografada, se necessário
+                "name": os.getenv("NAME_A"),
+                "password": os.getenv("PASSWORD_A"),  # Substitua pela senha criptografada, se necessário
+            },
+            os.getenv("USERNAME_B"): {
+                "email": os.getenv("EMAIL_B"),
+                "logged_in": False,
+                "name": os.getenv("NAME_B"),
+                "password": os.getenv("PASSWORD_B"),  # Substitua pela senha criptografada, se necessário
+            },
+            os.getenv("USERNAME_C"): {
+                "email": os.getenv("EMAIL_C"),
+                "logged_in": False,
+                "name": os.getenv("NAME_C"),
+                "password": os.getenv("PASSWORD_C"),  # Substitua pela senha criptografada, se necessário
+            },
+            os.getenv("USERNAME_D"): {
+                "email": os.getenv("EMAIL_D"),
+                "logged_in": False,
+                "name": os.getenv("NAME_D"),
+                "password": os.getenv("PASSWORD_D"),  # Substitua pela senha criptografada, se necessário
             }
+
+
         }
     },
     "cookie": {
@@ -52,9 +73,36 @@ authenticator = stauth.Authenticate(
     config['cookie']['expiry_days']
 )
 
-authenticator.login()
+auth_status = st.session_state.get(["authentication_status"])
+if auth_status == None:
+
+    authenticator.login()
+
+    st.markdown(
+    """
+    <style>
+    div[data-testid="stForm"] {
+        max-width: 80vw !important;
+        width: 40vw !important;
+        min-width: 320px !important;
+        margin: auto;
+    }
+
+    div[data-testid="stAlert"] {
+        max-width: 80vw !important;
+        width: 40vw !important;
+        min-width: 320px !important;
+        margin: auto;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+    
 
 if st.session_state["authentication_status"]:
+
+
     authenticator.logout()
     st.header("Dashboard das transferências do SAMU")
 
@@ -69,13 +117,16 @@ if st.session_state["authentication_status"]:
     [data-testid="stMetricValue"] {
         font-size: 1.2rem
     }
-
+    
     [data-testid="stMarkdownContainer"] {
         font-size: 0.95rem
     }
 
-
-
+    div[data-testid="stForm"] {
+        max-width: 20px !important;
+        margin: auto;
+        }
+    
     </style>
     """,
         unsafe_allow_html=True,
@@ -236,8 +287,10 @@ if st.session_state["authentication_status"]:
             st.dataframe(df_group, use_container_width=True, hide_index=True)
 
 elif st.session_state["authentication_status"] is False:
+
     st.error("Usuário/Senha inválido")
 
 elif st.session_state["authentication_status"] is None:
+
     st.warning("Por favor, utilize seu usuário e senha")
 

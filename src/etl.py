@@ -32,11 +32,6 @@ def get_sheet(worksheet_name: str):
 
         with open('google-api-credentials.json', 'w') as f:
             json.dump(credentials, f, indent=2)
-        print(f"Arquivo {file_path} criado com sucesso.")
-    else:
-
-        print(f"O arquivo {file_path} já existe.")
-
 
     gc = gspread.service_account("google-api-credentials.json")
     url_sheet = os.getenv("URL_SHEET")
